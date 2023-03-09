@@ -51,11 +51,9 @@ class LoginController extends GetxController{
           return const MyHomePage();
         }), (route) => false);
       }
-
     }
     else{
       errorMessage = "Unable to log in with provided credentials.";
-      // print(response.body);
         isLoggingIn = false;
         isUser = false;
     }

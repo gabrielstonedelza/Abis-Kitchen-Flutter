@@ -11,13 +11,17 @@ class FoodListController extends GetxController{
   List allSpecialLists = [];
   List allRegularLists = [];
 
-  Future<void> getAllFoodLists() async{
+
+  Future<void> getAllFoodLists(String token) async{
     try{
       isLoading = true;
       const postUrl = "http://127.0.0.1:8000/all-food/";
       final pLink = Uri.parse(postUrl);
-      http.Response res =
-      await http.get(pLink,);
+      http.Response res = await http.get(pLink, headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        'Accept': 'application/json',
+        "Authorization": "Token $token"
+      });
       if (res.statusCode == 200) {
         final codeUnits = res.body;
         var jsonData = jsonDecode(codeUnits);
@@ -32,6 +36,7 @@ class FoodListController extends GetxController{
           }
         }
         update();
+
       }
       else{
         // print(res.body);

@@ -17,13 +17,13 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   final storage = GetStorage();
   bool hasToken = false;
-  late String username = "";
+  late String uToken = "";
 
   @override
   void initState() {
     super.initState();
-    if (storage.read("username") != null) {
-      username = storage.read("username");
+    if (storage.read("token") != null) {
+      uToken = storage.read("token");
       setState(() {
         hasToken = true;
       });

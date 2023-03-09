@@ -11,8 +11,12 @@ import 'package:flutter/services.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:get/get.dart';
 
+import 'controllers/foodlist/favoritescontroller.dart';
 import 'controllers/foodlist/foodlistcontroller.dart';
+import 'controllers/foodlist/ordercontroller.dart';
 import 'controllers/login/logincontroller.dart';
+import 'controllers/notifications/notificationcontroller.dart';
+import 'controllers/userprofile/profilecontroller.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +25,10 @@ void main() async{
   await GetStorage.init();
   Get.put(LoginController());
   Get.put(FoodListController());
+  Get.put(OrderController());
+  Get.put(FavoritesController());
+  Get.put(ProfileController());
+  Get.put(NotificationController());
   runApp(const MyApp());
 }
 
