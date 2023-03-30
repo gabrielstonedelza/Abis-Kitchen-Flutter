@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../controllers/notifications/notificationcontroller.dart';
-import 'bottomnavigation.dart';
 import 'foodlist/foodlist.dart';
 
 class Notifications extends StatefulWidget {
@@ -43,7 +42,7 @@ class _NotificationsState extends State<Notifications> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: const CupertinoNavigationBar(
-        leading: Text("Alerts",style: TextStyle(fontWeight: FontWeight.bold,)),
+        previousPageTitle: "Food list",
       ),
       child: GetBuilder<NotificationController>(builder:(controller){
         return ListView.builder(

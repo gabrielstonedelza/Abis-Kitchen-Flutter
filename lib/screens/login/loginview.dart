@@ -67,7 +67,7 @@ class _LoginViewState extends State<LoginView> {
                             child: Column(
                               children: [
                                 CupertinoFormRow(
-                                  prefix: const Text("Email",style: TextStyle(color: CupertinoColors.white)),
+                                  prefix: const Icon(CupertinoIcons.mail),
                                   child: CupertinoTextFormFieldRow(
                                     validator: (value){
                                       if(value!.isEmpty){
@@ -84,14 +84,14 @@ class _LoginViewState extends State<LoginView> {
                                         cut: true
                                     ),
                                     style: const TextStyle(color: CupertinoColors.white),
-                                    placeholder: "username is required",
+                                    placeholder: "email is required",
                                   ),
                                 ),
                                 CupertinoFormRow(
-                                  prefix: const Text("Password",style: TextStyle(color: CupertinoColors.white),),
+                                  prefix: const Icon(CupertinoIcons.lock),
                                   child: CupertinoTextFormFieldRow(
                                     controller: _passwordController,
-                                    placeholder: "Enter your valid password",
+                                    // placeholder: "Enter your valid password",
                                     obscureText: true,
                                     cursorColor: CupertinoColors.white,
                                     autocorrect: true,

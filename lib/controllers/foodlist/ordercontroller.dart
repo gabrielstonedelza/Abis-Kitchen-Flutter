@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -9,6 +10,7 @@ import '../../global.dart';
 
 class OrderController extends GetxController{
   bool isLoading = true;
+  List itemPrices = [];
   List allMyOrders = [];
   double sum = 0.0;
   bool isRemovingFromCart = false;
@@ -26,13 +28,17 @@ class OrderController extends GetxController{
       if (res.statusCode == 200) {
         final codeUnits = res.body;
         var jsonData = jsonDecode(codeUnits);
-        var allPosts = jsonData;
-        allMyOrders.assignAll(allPosts);
+        var allOrders = jsonData;
+        allMyOrders.assignAll(allOrders);
         for(var i in allMyOrders) {
-          sum = sum + double.parse(i['get_price']);
+          if(!itemPrices.contains(i['get_total_order_price'])){
+            itemPrices.add(i['get_total_order_price']);
+            for(var p in itemPrices){
+              sum = sum + p;
+            }
+          }
         }
         update();
-        // print(allMyOrders);
       }
       else{
         // print(res.body);
@@ -64,6 +70,7 @@ class OrderController extends GetxController{
           snackPosition: SnackPosition.TOP,
           backgroundColor: primaryColor,
           duration: const Duration(seconds: 5));
+      update();
     }
     else{
       Get.snackbar("Order Error", "item is already in your cart.",
@@ -89,6 +96,7 @@ class OrderController extends GetxController{
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: primaryColor,
           duration: const Duration(seconds: 5));
+      update();
     }
     else{
       Get.snackbar("Sorry 😝", "something went wrong. Please try again later",
@@ -108,16 +116,50 @@ class OrderController extends GetxController{
       "Authorization": "Token $token"
     });
     if (res.statusCode == 204) {
-      // final codeUnits = res.body;
-      // var jsonData = jsonDecode(codeUnits);
-      // var allPosts = jsonData;
-      // allMyOrders.assignAll(allPosts);
       update();
-      // print(allMyOrders);
     }
     else{
       // print(res.body);
     }
 
+  }
+
+  increaseQuantity(String id,String slug,String token)async{
+    final requestUrl = "http://127.0.0.1:8000/increase_item_quantity/$id/$slug/";
+    final myLink = Uri.parse(requestUrl);
+    final response = await http.put(myLink, headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      'Accept': 'application/json',
+      "Authorization": "Token $token"
+    }, body: {
+      "food": slug,
+    });
+    if(response.statusCode == 200){
+      update();
+    }
+    else{
+      if (kDebugMode) {
+        print(response.body);
+      }
+    }
+  }
+  decreaseQuantity(String id,String slug,String token)async{
+    final requestUrl = "http://127.0.0.1:8000/decrease_item_quantity/$id/$slug/";
+    final myLink = Uri.parse(requestUrl);
+    final response = await http.put(myLink, headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      'Accept': 'application/json',
+      "Authorization": "Token $token"
+    }, body: {
+      "food": slug,
+    });
+    if(response.statusCode == 200){
+      update();
+    }
+    else{
+      if (kDebugMode) {
+        print(response.body);
+      }
+    }
   }
 }

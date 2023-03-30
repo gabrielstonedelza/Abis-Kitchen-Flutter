@@ -29,6 +29,7 @@ class _FoodDetailState extends State<FoodDetail> {
   int orderCount = 1;
   double itemPrice = 0.0;
   bool isZero = false;
+  var items;
 
   _FoodDetailState({required this.name,required this.price,required this.pic,required this.slug,required this.id});
   FoodListController controller = Get.find();
@@ -190,7 +191,58 @@ class _FoodDetailState extends State<FoodDetail> {
                   )
               ),
             );
-          })
+          }),
+          const SizedBox(height: 20),
+          const Padding(
+            padding: const EdgeInsets.only(left:18.0),
+            child: Text("Add Sides to your order",style:TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          const SizedBox(height: 20),
+          SizedBox(
+            height: 200,
+            width: 300,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: controller.allSidesLists != null ? controller.allSidesLists.length : 0,
+              itemBuilder: (context,index){
+                items = controller.allSidesLists[index];
+                return Card(
+                  elevation: 12,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Image.network(items['get_food_image'],width:200,height:100,fit: BoxFit.cover,),
+                        Padding(
+                          padding: const EdgeInsets.only(top:18.0,bottom:10),
+                          child: Text(items['name'],style:const TextStyle(fontWeight: FontWeight.bold,fontSize:15)),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("\$${items['price']}",style:const TextStyle(fontWeight: FontWeight.bold,color:CupertinoColors.destructiveRed)),
+                            GetBuilder<OrderController>(builder:(orController){
+                              return GestureDetector(
+                                  onTap: (){
+                                    orController.addToCart(uToken, controller.allSidesLists[index]['slug'], controller.allSidesLists[index]['name'],1.toString());
+                                  },
+                                  child: const Icon(CupertinoIcons.cart_badge_plus,size: 30,)
+                              );
+                            })
+
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          )
+
 
         ],
       )

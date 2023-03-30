@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import '../controllers/foodlist/ordercontroller.dart';
 import '../controllers/login/logincontroller.dart';
 import '../global.dart';
+import 'foodlist/fooddetail.dart';
 
 class Cart extends StatefulWidget {
   const Cart({Key? key}) : super(key: key);
@@ -22,6 +23,7 @@ class _CartState extends State<Cart> {
   late String uToken = "";
   var items;
   final storage = GetStorage();
+  double sum = 0.0;
 
   @override
   void initState(){
@@ -34,6 +36,11 @@ class _CartState extends State<Cart> {
     if (storage.read("username") != null) {
       setState(() {
         username = storage.read("username");
+      });
+    }
+    for(var i in controller.allMyOrders){
+      setState(() {
+        sum = sum + i['get_total_order_price'];
       });
     }
   }
@@ -50,6 +57,9 @@ class _CartState extends State<Cart> {
             })
           ],
         ),
+        middle: GetBuilder<OrderController>(builder: (controller){
+          return Text("Check Out(\$${controller.sum.toStringAsFixed(2)})",style:const TextStyle(color:primaryColor,fontWeight: FontWeight.bold));
+        },),
         trailing: GestureDetector(
           onTap:(){
             if(controller.allMyOrders.isEmpty){
@@ -87,11 +97,11 @@ class _CartState extends State<Cart> {
             child: const Icon(CupertinoIcons.delete,color:CupertinoColors.destructiveRed)),
         // backgroundColor: CupertinoColors.black,
       ),
-      child: GetBuilder<OrderController>(builder:(controller){
+      child: GetBuilder<OrderController>(builder:(orderController){
         return ListView.builder(
-          itemCount: controller.allMyOrders.length ?? 0,
+          itemCount:orderController.allMyOrders != null ? orderController.allMyOrders.length : 0,
           itemBuilder: (context,index){
-            items = controller.allMyOrders[index];
+            items = orderController.allMyOrders[index];
             return Padding(
               padding: const EdgeInsets.all(3.0),
               child: Card(
@@ -103,6 +113,11 @@ class _CartState extends State<Cart> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ListTile(
+                    onTap: (){
+                      Navigator.of(context).push(CupertinoPageRoute(builder: (context){
+                        return FoodDetail(name:orderController.allMyOrders[index]['get_food_name'],price:orderController.allMyOrders[index]['get_price'].toString(),pic:orderController.allMyOrders[index]['get_order_item_image'],slug:orderController.allMyOrders[index]['get_food_slug'],id:orderController.allMyOrders[index]['id'].toString());
+                      }));
+                    },
                     leading: ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: Image.network(items['get_order_item_image'],width:80,height:100,fit: BoxFit.cover,)),
@@ -129,12 +144,16 @@ class _CartState extends State<Cart> {
                           padding: const EdgeInsets.only(left:8.0),
                           child: Text(items['date_ordered'].toString().split('T').first),
                         ),
+
                         //  add two buttons here for adding and subtracting from cart,and also button to clear all order
                         Row(
                           children: [
-                            IconButton(onPressed: () {  }, icon: const Icon(CupertinoIcons.minus_circle),),
+                            IconButton(onPressed: () { 
+                              orderController.decreaseQuantity(orderController.allMyOrders[index]['id'].toString(), orderController.allMyOrders[index]['get_food_slug'], uToken);
+                            }, icon: const Icon(CupertinoIcons.minus_circle),),
                             Text(items['quantity'].toString(),style:const TextStyle(fontWeight: FontWeight.bold,fontSize: 20)),
-                            IconButton(onPressed: () {  }, icon: const Icon(CupertinoIcons.add_circled),),
+                            IconButton(onPressed: () {
+                              orderController.increaseQuantity(orderController.allMyOrders[index]['id'].toString(), orderController.allMyOrders[index]['get_food_slug'], uToken); }, icon: const Icon(CupertinoIcons.add_circled),),
                           ],
                         )
                       ],
@@ -144,12 +163,12 @@ class _CartState extends State<Cart> {
                             showCupertinoModalPopup(context: context, builder: (BuildContext context) {
                               return  CupertinoActionSheet(
                                 title: const Text("Confirm"),
-                                message: Text("Are you sure you want to remove ${controller.allMyOrders[index]['get_food_name']} from your cart?"),
+                                message: Text("Are you sure you want to remove ${orderController.allMyOrders[index]['get_food_name']} from your cart?"),
                                 actions: [
                                   CupertinoActionSheetAction(
                                       onPressed: (){
-                                        controller.removeFromCart(controller.allMyOrders[index]['id'].toString(),uToken,controller.allMyOrders[index]['get_food_name']);
-                                        controller.getAllMyOrders(uToken);
+                                        orderController.removeFromCart(orderController.allMyOrders[index]['id'].toString(),uToken,orderController.allMyOrders[index]['get_food_name']);
+                                        orderController.getAllMyOrders(uToken);
                                         Navigator.pop(context);
                                       },
                                       child:const Text("Yes")

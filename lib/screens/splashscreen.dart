@@ -28,6 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
         hasToken = true;
       });
     }
+
     if (hasToken) {
       Timer(const Duration(seconds: 7),
           () => Navigator.pushAndRemoveUntil(context,
@@ -41,25 +42,32 @@ class _SplashScreenState extends State<SplashScreen> {
                 return const LoginView();
               }), (route) => false));
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       child: Container(
-          height: double.infinity,
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            color: CupertinoColors.black,
-            image: DecorationImage(
-                image: AssetImage("assets/images/food.jpg"), fit: BoxFit.cover),
-          ),
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        height: double.infinity,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          color: CupertinoColors.black,
+          image: DecorationImage(
+              // scale: 2.0,
+              image: AssetImage("assets/images/Subject.png"),
+              fit: BoxFit.contain),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
             const Padding(
-              padding: EdgeInsets.only(bottom:30.0),
+              padding: EdgeInsets.only(bottom: 30.0),
               child: Center(
-                child: Text("Abi's Kitchen",style: TextStyle(fontWeight:FontWeight.bold,fontSize:50,color:defaultColor)),
+                child: Text("Abi's Kitchen",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 50,
+                        color: defaultColor)),
               ),
             ),
             SizedBox(
@@ -72,15 +80,16 @@ class _SplashScreenState extends State<SplashScreen> {
                 child: AnimatedTextKit(
                   totalRepeatCount: 1,
                   animatedTexts: [
-                    TyperAnimatedText(
-                        "Food you can't resists",
-                      speed: const Duration(milliseconds:100)
-                    ),
+                    TyperAnimatedText("Food you can't resists",
+                        speed: const Duration(milliseconds: 100)),
                   ],
                 ),
               ),
-            )
-          ])),
+            ),
+            const SizedBox(height: 100,)
+          ],
+        ),
+      ),
     );
   }
 }

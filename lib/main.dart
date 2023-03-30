@@ -1,12 +1,6 @@
 import 'package:abiskitchen/global.dart';
-import 'package:abiskitchen/screens/cart.dart';
-import 'package:abiskitchen/screens/favorites.dart';
-import 'package:abiskitchen/screens/foodlist/foodlist.dart';
-import 'package:abiskitchen/screens/login/loginview.dart';
-import 'package:abiskitchen/screens/profile.dart';
 import 'package:abiskitchen/screens/splashscreen.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:get/get.dart';

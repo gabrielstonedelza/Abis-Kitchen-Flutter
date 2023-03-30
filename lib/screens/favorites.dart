@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../controllers/foodlist/favoritescontroller.dart';
-import '../controllers/foodlist/ordercontroller.dart';
 import '../controllers/login/logincontroller.dart';
 import '../global.dart';
+import 'foodlist/fooddetail.dart';
 
 class Favorites extends StatefulWidget {
   const Favorites({Key? key}) : super(key: key);
@@ -92,7 +92,7 @@ class _FavoritesState extends State<Favorites> {
       ),
       child: GetBuilder<FavoritesController>(builder:(controller){
         return ListView.builder(
-          itemCount: controller.allMyFavorites.length ?? 0,
+          itemCount:controller.allMyFavorites != null ? controller.allMyFavorites.length : 0,
           itemBuilder: (context,index){
             items = controller.allMyFavorites[index];
             return Padding(
@@ -106,6 +106,11 @@ class _FavoritesState extends State<Favorites> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ListTile(
+                    onTap: (){
+                      Navigator.of(context).push(CupertinoPageRoute(builder: (context){
+                        return FoodDetail(name:controller.allMyFavorites[index]['get_food_name'],price:controller.allMyFavorites[index]['get_food_price'].toString(),pic:controller.allMyFavorites[index]['get_food_pic'],slug:controller.allMyFavorites[index]['food_slug'],id:controller.allMyFavorites[index]['id'].toString());
+                      }));
+                    },
                     leading: ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: Image.network(items['get_food_pic'],width:80,height:100,fit: BoxFit.cover,)),
